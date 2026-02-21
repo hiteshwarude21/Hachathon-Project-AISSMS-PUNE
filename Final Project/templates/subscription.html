@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-crown"></i> Subscription Plans</h4>
+                </div>
+                <div class="card-body">
+                    {% if subscription and subscription.status == 'active' and subscription.plan_name == 'Premium Plan' %}
+                        <div class="alert alert-success text-center">
+                            <i class="fas fa-check-circle fa-3x mb-3"></i>
+                            <h4>Premium Plan Active</h4>
+                            <p>You have unlimited access to all features!</p>
+                            <p><strong>Expires:</strong> {{ subscription.expiry_date.strftime('%d-%m-%Y') if subscription.expiry_date else 'Lifetime' }}</p>
+                        </div>
+                    {% else %}
+                        <div class="row">
+                            <!-- Free Plan -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light">
+                                        <h5 class="text-center">Free Plan</h5>
+                                        <h3 class="text-center text-success">₹0<span class="text-muted">/month</span></h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2"><i class="fas fa-check text-success"></i> 5 chat messages per day</li>
+                                            <li class="mb-2"><i class="fas fa-check text-success"></i> Basic scheme information</li>
+                                            <li class="mb-2"><i class="fas fa-times text-danger"></i> Limited document storage</li>
+                                            <li class="mb-2"><i class="fas fa-times text-danger"></i> No priority support</li>
+                                        </ul>
+                                        <button class="btn btn-outline-secondary w-100" disabled>
+                                            <i class="fas fa-check"></i> Current Plan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Premium Plan -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <h5 class="text-center">Premium Plan</h5>
+                                        <h3 class="text-center">₹149<span class="text-light">/month</span></h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2"><i class="fas fa-check text-success"></i> Unlimited chat messages</li>
+                                            <li class="mb-2"><i class="fas fa-check text-success"></i> Priority scheme assistance</li>
+                                            <li class="mb-2"><i class="fas fa-check text-success"></i> Unlimited document storage</li>
+                                            <li class="mb-2"><i class="fas fa-check text-success"></i> Admin fast-track approval</li>
+                                            <li class="mb-2"><i class="fas fa-check text-success"></i> 24/7 support</li>
+                                        </ul>
+                                        <a href="{{ url_for('payment') }}" class="btn btn-success w-100">
+                                            <i class="fas fa-crown"></i> Upgrade Now
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle"></i> Why Upgrade to Premium?</h6>
+                            <ul class="mb-0">
+                                <li>Get unlimited assistance for all your farming needs</li>
+                                <li>Priority processing for government scheme applications</li>
+                                <li>Expert guidance for crop damage claims</li>
+                                <li>Secure cloud storage for all your important documents</li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

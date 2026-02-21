@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-user"></i> {{ t["farmer"] }} {{ t["profile"] }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="full_name" class="form-label">{{ t["full_name"] }}</label>
+                                    <input type="text" class="form-control" id="full_name" name="full_name" 
+                                           value="{{ profile.full_name if profile else '' }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="mobile" class="form-label">{{ t["mobile"] }}</label>
+                                    <input type="tel" class="form-control" id="mobile" name="mobile" 
+                                           value="{{ profile.mobile if profile else '' }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="state" class="form-label">State</label>
+                                    <input type="text" class="form-control" id="state" name="state" 
+                                           value="{{ profile.state if profile else '' }}" placeholder="Enter your state">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="farm_location" class="form-label">Farm Location (District, Village)</label>
+                            <input type="text" class="form-control" id="farm_location" name="farm_location" 
+                                   value="{{ profile.farm_location if profile else '' }}" placeholder="e.g., Pune, Maharashtra">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="land_area" class="form-label">Land Area (in acres)</label>
+                                    <input type="number" step="0.1" class="form-control" id="land_area" name="land_area" 
+                                           value="{{ profile.land_area if profile else '' }}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Complete Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="3" required>{{ profile.address if profile else '' }}</textarea>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-save"></i> {{ t["update"] }} {{ t["profile"] }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Document Status -->
+            <div class="card shadow mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-file-check"></i> {{ t["document_status"] }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="fas fa-id-card"></i> {{ t["aadhaar_number"] }}</span>
+                                <span class="badge {% if documents and documents.aadhaar_number %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if documents and documents.aadhaar_number %}{{ t["uploaded"] }}{% else %}{{ t["not_uploaded"] }}{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="fas fa-credit-card"></i> {{ t["pan_number"] }}</span>
+                                <span class="badge {% if documents and documents.pan_number %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if documents and documents.pan_number %}{{ t["uploaded"] }}{% else %}{{ t["not_uploaded"] }}{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="fas fa-receipt"></i> Ration Card</span>
+                                <span class="badge {% if documents and documents.ration_card_number %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if documents and documents.ration_card_number %}{{ t["uploaded"] }}{% else %}{{ t["not_uploaded"] }}{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="fas fa-map"></i> Land Record</span>
+                                <span class="badge {% if documents and documents.land_record_number %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if documents and documents.land_record_number %}{{ t["uploaded"] }}{% else %}{{ t["not_uploaded"] }}{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('documents') }}" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> {{ t["manage_documents"] }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

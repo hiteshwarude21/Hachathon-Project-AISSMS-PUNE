@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">{{ t["admin_dashboard"] }}</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <span class="badge bg-danger">Admin Panel</span>
+                </div>
+            </div>
+
+            <!-- Applications Table -->
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-clipboard-list"></i> {{ t["pending_requests"] }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Application ID</th>
+                                    <th>{{ t["farmer"] }} Name</th>
+                                    <th>{{ t["state"] }}</th>
+                                    <th>{{ t["district"] }}</th>
+                                    <th>{{ t["crop"] }}</th>
+                                    <th>Land Size</th>
+                                    <th>Documents</th>
+                                    <th>{{ t["scheme"] }} Name</th>
+                                    <th>Category</th>
+                                    <th>Date</th>
+                                    <th>{{ t["status"] }}</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in alerts %}
+                                <tr>
+                                    <td>#{{ item.alert.id }}</td>
+                                    <td>{{ item.alert.farmer_name }}</td>
+                                    <td>{{ item.alert.state or 'Unknown' }}</td>
+                                    <td>{{ item.alert.district or 'Unknown' }}</td>
+                                    <td>{{ item.alert.crop }}</td>
+                                    <td>{{ item.alert.land_size or 0 }} {{ t["acres"] }}</td>
+                                    <td>
+                                        {% if item.documents %}
+                                            <a href="{{ url_for('admin_farmer_documents', farmer_id=item.alert.farmer_id) }}" class="btn btn-sm btn-info" target="_blank">
+                                                <i class="fas fa-folder-open"></i> View Documents
+                                            </a>
+                                            <div class="mt-1">
+                                                {% for doc in item.documents %}
+                                                    <span class="badge bg-secondary me-1">{{ doc.document_type }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted">No docs</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.alert.scheme_name }}</td>
+                                    <td><span class="badge bg-info">{{ item.alert.category or 'General' }}</span></td>
+                                    <td>{{ item.alert.created_at.strftime('%d-%m-%Y') }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if item.alert.status == 'Pending' %}bg-warning
+                                            {% elif item.alert.status == 'Approved' %}bg-success
+                                            {% elif item.alert.status == 'Rejected' %}bg-danger
+                                            {% endif %}">
+                                            {{ item.alert.status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if item.alert.status == 'Pending' %}
+                                        <button class="btn btn-sm btn-success me-1" onclick="updateAlert('{{ item.alert.id }}', 'Approved')">
+                                            <i class="fas fa-check"></i> {{ t["approve"] }}
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="updateAlert('{{ item.alert.id }}', 'Rejected')">
+                                            <i class="fas fa-times"></i> {{ t["reject"] }}
+                                        </button>
+                                        {% else %}
+                                        <span class="text-muted">
+                                            {% if item.alert.status == 'Approved' %}
+                                                <i class="fas fa-check-circle text-success"></i> {{ t["approve"] }}d
+                                                {% if item.alert.processed_at %}
+                                                <small class="d-block">({{ item.alert.processed_at.strftime('%d-%m-%Y') }})</small>
+                                                {% endif %}
+                                            {% else %}
+                                                <i class="fas fa-times-circle text-danger"></i> {{ t["reject"] }}ed
+                                                {% if item.alert.processed_at %}
+                                                <small class="d-block">({{ item.alert.processed_at.strftime('%d-%m-%Y') }})</small>
+                                                {% endif %}
+                                            {% endif %}
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% if not alerts %}
+                                <tr>
+                                    <td colspan="11" class="text-center text-muted">No applications found</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="card border-warning">
+                        <div class="card-body text-center">
+                            <h5 class="text-warning">{{ alerts | selectattr('status', 'equalto', 'Pending') | list | length }}</h5>
+                            <p class="mb-0">{{ t["pending_requests"] }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-success">
+                        <div class="card-body text-center">
+                            <h5 class="text-success">{{ alerts | selectattr('status', 'equalto', 'Approved') | list | length }}</h5>
+                            <p class="mb-0">{{ t["approve"] }}ed Applications</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-danger">
+                        <div class="card-body text-center">
+                            <h5 class="text-danger">{{ alerts | selectattr('status', 'equalto', 'Rejected') | list | length }}</h5>
+                            <p class="mb-0">{{ t["reject"] }}ed Applications</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-primary">
+                        <div class="card-body text-center">
+                            <h5 class="text-primary">{{ alerts | length }}</h5>
+                            <p class="mb-0">Total Applications</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateAlert(alertId, status) {
+    if (confirm(`Are you sure you want to ${status.toLowerCase()} this application?`)) {
+        fetch(`/update_alert/${alertId}/${status}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Failed to update application');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update application');
+            });
+    }
+}
+</script>
+{% endblock %}

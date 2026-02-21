@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">{{ t["dashboard"] }}</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <span class="badge bg-success">Welcome, {{ session.username }}!</span>
+                </div>
+            </div>
+
+            <!-- Enhanced Chat Section -->
+            <div id="chatSection" class="card">
+                <div class="chat-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-robot"></i> 
+                        <span class="ms-2">🤖 AgriSahayak AI Assistant</span>
+                    </h5>
+                    <div class="chat-status">
+                        <div class="status-dot"></div>
+                        <span class="ms-2">Online & Ready</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="chatMessages" class="chat-messages">
+                        <div class="message bot-message">
+                            <div class="message-content">
+                                <div class="message-title">🌾 Welcome to AgriSahayak 3.0!</div>
+                                <div class="message-section">
+                                    <div class="message-highlight">
+                                        I'm your advanced AI agriculture assistant with access to real-time weather data, market prices, and comprehensive government schemes. I can help you with:
+                                    </div>
+                                    <div class="message-content">
+                                        <div class="message-emoji">🌾</div>
+                                        <strong>Crop Insurance</strong> with instant claim processing<br>
+                                        <div class="message-emoji">💰</div>
+                                        <strong>Financial Support</strong> with personalized loan recommendations<br>
+                                        <div class="message-emoji">💧</div>
+                                        <strong>Water Management</strong> with conservation techniques<br>
+                                        <div class="message-emoji">🚜</div>
+                                        <strong>Equipment Subsidies</strong> for modern farming<br>
+                                        <div class="message-emoji">🐄</div>
+                                        <strong>Livestock Support</strong> with best practices<br>
+                                    </div>
+                                </div>
+                                <div class="message-section">
+                                    <div class="message-highlight">
+                                        Ask me anything about farming, government schemes, or agricultural challenges!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <div class="chat-input-group">
+                            <input type="text" id="chatInput" class="chat-input" placeholder="{{ t['chat_placeholder'] }}" onkeypress="if(event.key === 'Enter') sendMessage()">
+                            <button class="send-button" onclick="sendMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="sendQuickMessage('My crop is damaged')">
+                            <i class="fas fa-exclamation-triangle"></i> Crop Damage
+                        </button>
+                        <button class="quick-action-btn" onclick="sendQuickMessage('I need a loan for farming')">
+                            <i class="fas fa-money-bill-wave"></i> Need Loan
+                        </button>
+                        <button class="quick-action-btn" onclick="sendQuickMessage('Water problem in my farm')">
+                            <i class="fas fa-tint"></i> Water Issue
+                        </button>
+                        <button class="quick-action-btn" onclick="sendQuickMessage('Need equipment subsidy')">
+                            <i class="fas fa-tractor"></i> Equipment
+                        </button>
+                        <button class="quick-action-btn" onclick="sendQuickMessage('Livestock health issues')">
+                            <i class="fas fa-cow"></i> Livestock
+                        </button>
+                    </div>
+                    
+                    <!-- Apply Button -->
+                    <div id="applySection" class="apply-button-container" style="display: none;">
+                        <button class="apply-button" onclick="applyForScheme()">
+                            <i class="fas fa-file-contract"></i> Apply for Recommended Scheme
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card border-success">
+                        <div class="card-body text-center">
+                            <i class="fas fa-comments fa-2x text-success"></i>
+                            <h6 class="mt-2">AI Assistant</h6>
+                            <p class="mb-0">Advanced chatbot with real-time data</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-success">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line fa-2x text-success"></i>
+                            <h6 class="mt-2">Market Data</h6>
+                            <p class="mb-0">Live prices & trends</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-success">
+                        <div class="card-body text-center">
+                            <i class="fas fa-cloud-sun fa-2x text-success"></i>
+                            <h6 class="mt-2">Weather Info</h6>
+                            <p class="mb-0">Real-time conditions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let allowApply = false;
+
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Add user message to chat
+    addMessage(message, 'user');
+    input.value = '';
+    
+    // Show typing indicator
+    showTypingIndicator();
+    
+    // Send message to enhanced backend
+    fetch('/enhanced_chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: message })
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideTypingIndicator();
+        addMessage(data.reply, 'bot');
+        allowApply = data.allow_apply;
+        
+        // Show/hide apply button
+        const applySection = document.getElementById('applySection');
+        if (allowApply || data.reply.includes('Apply for Recommended Scheme')) {
+            applySection.style.display = 'block';
+        } else {
+            applySection.style.display = 'none';
+        }
+    })
+    .catch(error => {
+        hideTypingIndicator();
+        addMessage('I apologize for the error. Please try again.', 'bot');
+        console.error('Error:', error);
+    });
+}
+
+function sendQuickMessage(message) {
+    document.getElementById('chatInput').value = message;
+    sendMessage();
+}
+
+function addMessage(message, sender) {
+    const chatMessages = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message fade-in`;
+    
+    // Enhanced message formatting
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    
+    // Parse and format the message with enhanced styling
+    const formattedMessage = formatMessage(message);
+    messageContent.innerHTML = formattedMessage;
+    
+    messageDiv.appendChild(messageContent);
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function formatMessage(message) {
+    // Enhanced message formatting with emoji support and structured content
+    let formatted = message;
+    
+    // Convert markdown-style formatting to HTML
+    formatted = formatted
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n\n/g, '</div><div class="message-section">')
+        .replace(/\n/g, '<br>')
+        .replace(/🌾\*\*(.*?)\*\*/g, '<div class="message-title">🌾 $1</div>')
+        .replace(/💰\*\*(.*?)\*\*/g, '<div class="message-emoji">💰</div><strong>$1</strong>')
+        .replace(/💧\*\*(.*?)\*\*/g, '<div class="message-emoji">💧</div><strong>$1</strong>')
+        .replace(/🚜\*\*(.*?)\*\*/g, '<div class="message-emoji">🚜</div><strong>$1</strong>')
+        .replace(/🐄\*\*(.*?)\*\*/g, '<div class="message-emoji">🐄</div><strong>$1</strong>');
+    
+    // Wrap sections in highlights
+    formatted = formatted
+        .replace(/<div class="message-section">(.*?)<\/div>/g, '<div class="message-highlight">$1</div><div class="message-section">$2</div>');
+    
+    return formatted;
+}
+
+function showTypingIndicator() {
+    const indicator = document.querySelector('.typing-indicator');
+    if (indicator) {
+        indicator.classList.add('active');
+    }
+}
+
+function hideTypingIndicator() {
+    const indicator = document.querySelector('.typing-indicator');
+    if (indicator) {
+        indicator.classList.remove('active');
+    }
+}
+
+function applyForScheme() {
+    // Enhanced apply functionality
+    alert('🎯 Applying for the most suitable scheme based on your needs!\n\n' +
+          'Our system will analyze your profile and suggest the best match.\n\n' +
+          'You can track your application status in your dashboard.');
+}
+</script>
+{% endblock %}

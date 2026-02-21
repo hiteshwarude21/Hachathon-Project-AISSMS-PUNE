@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-seedling fa-3x text-success"></i>
+                        <h3 class="mt-3">{{ t["login"] }} to AgriSahayak</h3>
+                    </div>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">{{ t["username"] }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">{{ t["password"] }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-sign-in-alt"></i> {{ t["login"] }}
+                            </button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Don't have an account? <a href="{{ url_for('register') }}">{{ t["register"] }} here</a></p>
+                        <p class="mt-2 text-muted small">© 2026 AgriSahayak - Smart Farming Support System</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

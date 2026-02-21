@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="showChat()">
+                            <i class="fas fa-comments"></i> Chat Assistant
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('profile') }}">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('documents') }}">
+                            <i class="fas fa-file-alt"></i> Documents
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('subscription') }}">
+                            <i class="fas fa-crown"></i> Subscription
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Dashboard</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <span class="badge bg-success">Welcome, {{ session.username }}!</span>
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div id="chatSection" class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-robot"></i> AgriSahayak Assistant</h5>
+                </div>
+                <div class="card-body">
+                    <div id="chatMessages" class="chat-messages mb-3" style="height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 15px; background-color: #f8f9fa;">
+                        <div class="message bot-message">
+                            <div class="alert alert-info">
+                                <i class="fas fa-robot"></i> Hello! I'm here to help you with crop damage guidance and government schemes. Please tell me about your crop and any issues you're facing.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="chatInput" class="form-control" placeholder="Type your message here..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                        <button class="btn btn-success" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                    <div id="applySection" style="display: none;" class="mt-3">
+                        <button id="applyBtn" class="btn btn-primary btn-lg" onclick="applyForScheme()">
+                            <i class="fas fa-file-contract"></i> Apply for Scheme
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card border-success">
+                        <div class="card-body text-center">
+                            <i class="fas fa-comments fa-2x text-success"></i>
+                            <h6 class="mt-2">Chat Assistant</h6>
+                            <p class="mb-0">Get help with crop damage</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-success">
+                        <div class="card-body text-center">
+                            <i class="fas fa-file-contract fa-2x text-success"></i>
+                            <h6 class="mt-2">Government Schemes</h6>
+                            <p class="mb-0">Apply for benefits</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-success">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt fa-2x text-success"></i>
+                            <h6 class="mt-2">Document Storage</h6>
+                            <p class="mb-0">Secure file management</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

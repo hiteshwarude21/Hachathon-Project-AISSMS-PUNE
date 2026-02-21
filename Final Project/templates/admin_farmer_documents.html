@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user"></i> {{ farmer_name }} - {{ t["documents"] }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-map-marker-alt"></i> {{ t["state"] }}: {{ state }}</h5>
+                            <p class="text-muted">{{ district }}, {{ land_size }} {{ t["acres"] }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-user"></i> {{ t["profile"] }} Status</h5>
+                            <p class="text-muted">Complete your profile for better recommendations</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h5>{{ t["document_status"] }}</h5>
+                    
+                    {% if documents %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <h6><i class="fas fa-id-card"></i> {{ t["aadhaar_number"] }}</h6>
+                                    <p class="text-success fw-bold">{{ documents.aadhaar_number or 'Not uploaded' }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <h6><i class="fas fa-id-card"></i> {{ t["pan_number"] }}</h6>
+                                    <p class="text-success fw-bold">{{ documents.pan_number or 'Not uploaded' }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <h6><i class="fas fa-id-card"></i> {{ t["ration_card_number"] }}</h6>
+                                    <p class="text-success fw-bold">{{ documents.ration_card_number or 'Not uploaded' }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <h6><i class="fas fa-id-card"></i> {{ t["land_record_number"] }}</h6>
+                                    <p class="text-success fw-bold">{{ documents.land_record_number or 'Not uploaded' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-file"></i> {{ t["aadhaar_number"] }} File</h6>
+                                {% if documents and documents.aadhaar_file %}
+                                    <a href="{{ url_for('uploaded_file', filename=documents.aadhaar_file) }}" target="_blank" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i> {{ t["view"] }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">{{ t["not_uploaded"] }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-file"></i> {{ t["pan_number"] }} File</h6>
+                                {% if documents and documents.pan_file %}
+                                    <a href="{{ url_for('uploaded_file', filename=documents.pan_file) }}" target="_blank" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i> {{ t["view"] }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">{{ t["not_uploaded"] }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-file"></i> {{ t["ration_card_number"] }} File</h6>
+                                {% if documents and documents.ration_file %}
+                                    <a href="{{ url_for('uploaded_file', filename=documents.ration_file) }}" target="_blank" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i> {{ t["view"] }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">{{ t["not_uploaded"] }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-file"></i> {{ t["land_record_number"] }} File</h6>
+                                {% if documents and documents.land_file %}
+                                    <a href="{{ url_for('uploaded_file', filename=documents.land_file) }}" target="_blank" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i> {{ t["view"] }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">{{ t["not_uploaded"] }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No documents uploaded by this farmer yet.
+                        </div>
+                    {% endif %}
+                    
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-credit-card"></i> Complete Your Payment</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h5>Premium Plan Subscription</h5>
+                        <h2 class="text-success">₹149 <small class="text-muted">/month</small></h2>
+                    </div>
+
+                    <form id="paymentForm">
+                        <div class="mb-4">
+                            <h6>Choose Payment Method</h6>
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="upi" value="upi" checked>
+                                        <label class="form-check-label" for="upi">
+                                            <i class="fas fa-mobile-alt"></i> UPI
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="card" value="card">
+                                        <label class="form-check-label" for="card">
+                                            <i class="fas fa-credit-card"></i> Card
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="netbanking" value="netbanking">
+                                        <label class="form-check-label" for="netbanking">
+                                            <i class="fas fa-university"></i> Net Banking
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UPI Payment -->
+                        <div id="upi-section" class="payment-section">
+                            <div class="mb-3">
+                                <label for="upi_id" class="form-label">UPI ID</label>
+                                <input type="text" class="form-control" id="upi_id" placeholder="yourname@upi">
+                            </div>
+                        </div>
+
+                        <!-- Card Payment -->
+                        <div id="card-section" class="payment-section" style="display: none;">
+                            <div class="mb-3">
+                                <label for="card_number" class="form-label">Card Number</label>
+                                <input type="text" class="form-control" id="card_number" placeholder="1234 5678 9012 3456">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="expiry" class="form-label">Expiry Date</label>
+                                        <input type="text" class="form-control" id="expiry" placeholder="MM/YY">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="cvv" class="form-label">CVV</label>
+                                        <input type="text" class="form-control" id="cvv" placeholder="123">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Net Banking -->
+                        <div id="netbanking-section" class="payment-section" style="display: none;">
+                            <div class="mb-3">
+                                <label for="bank" class="form-label">Select Bank</label>
+                                <select class="form-select" id="bank">
+                                    <option value="">Choose your bank</option>
+                                    <option value="sbi">State Bank of India</option>
+                                    <option value="hdfc">HDFC Bank</option>
+                                    <option value="icici">ICICI Bank</option>
+                                    <option value="pnb">Punjab National Bank</option>
+                                    <option value="axis">Axis Bank</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-success btn-lg" onclick="processPayment()">
+                                <i class="fas fa-lock"></i> Confirm Payment ₹149
+                            </button>
+                            <a href="{{ url_for('subscription') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Plans
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showPaymentSection(method) {
+    document.querySelectorAll('.payment-section').forEach(section => {
+        section.style.display = 'none';
+    });
+    document.getElementById(method + '-section').style.display = 'block';
+}
+
+document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        showPaymentSection(this.value);
+    });
+});
+
+function processPayment() {
+    const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+    
+    // Simple validation
+    if (paymentMethod === 'upi' && !document.getElementById('upi_id').value) {
+        alert('Please enter UPI ID');
+        return;
+    }
+    if (paymentMethod === 'card' && (!document.getElementById('card_number').value || !document.getElementById('cvv').value)) {
+        alert('Please enter card details');
+        return;
+    }
+    if (paymentMethod === 'netbanking' && !document.getElementById('bank').value) {
+        alert('Please select your bank');
+        return;
+    }
+
+    // Show processing
+    const btn = event.target;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    btn.disabled = true;
+
+    // Simulate payment processing
+    setTimeout(() => {
+        fetch('/process_payment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                plan: 'premium',
+                payment_method: paymentMethod
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Payment successful! Your Premium subscription is now active.');
+                window.location.href = '/subscription';
+            } else {
+                alert('Payment failed. Please try again.');
+                btn.innerHTML = '<i class="fas fa-lock"></i> Confirm Payment ₹149';
+                btn.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Payment failed. Please try again.');
+            btn.innerHTML = '<i class="fas fa-lock"></i> Confirm Payment ₹149';
+            btn.disabled = false;
+        });
+    }, 2000);
+}
+</script>
+{% endblock %}
