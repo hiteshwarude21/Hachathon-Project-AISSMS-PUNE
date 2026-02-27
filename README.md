@@ -41,9 +41,3 @@ AgriSahayak is a smart web-based platform designed to help farmers easily discov
 5. Suggest Best Scheme  
 6. Show **Apply** button (only when all conditions are met)
 
-The backend always returns:
-```json
-{
-  "reply": "non-empty response",
-  "allow_apply": true/false
-}
