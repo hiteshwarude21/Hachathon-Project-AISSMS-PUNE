@@ -41,5 +41,4 @@ AgriSahayak is a smart web-based platform designed to help farmers easily discov
 5. Suggest Best Scheme  
 6. Show **Apply** button (only when all conditions are met)
 
-   many more to add...
 
