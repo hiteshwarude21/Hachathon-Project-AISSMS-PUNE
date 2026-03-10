@@ -28,7 +28,7 @@ AgriSahayak is a smart web-based platform designed to help farmers easily discov
 - ✅ Approve / ❌ Reject requests
 - 🕒 Track pending and processed applications
 - 📊 Monitor scheme usage and requests
-- 🔔 Real-time status updates
+- 🔔 Real-time updates
 
 ---
 
